@@ -1,0 +1,20 @@
+Preprocessing	
+	Tokenizer to be used (keras, spacy)
+	Case updation
+	Spelling correction?
+	Lemmatising?
+	Punctuation removal?
+	Spaces around characters
+Model architecture
+	Embedding extraction - GLove? Combination and parameters, random sampling?
+	Reduction - Spatial dropout, maxpooling, nothing?
+	Model - FC Net, CNN, LSTM or GRU? Multiple ?
+	Batch Normalisation and Dropout layers?
+	What optimiser?
+	Hyper parameter tuning
+	CV - very important
+	Loss fn? Cross Entropy check?
+	Ensemble?
+	Output layer
+
+GPU and running
