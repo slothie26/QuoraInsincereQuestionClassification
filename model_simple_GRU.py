@@ -5,10 +5,7 @@ import pandas as pd
 import math
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
-<<<<<<< HEAD
 from sklearn.metrics import *
-=======
->>>>>>> 77a9dd4960e57bdf719df8a0d256242ad9f62448
 
 batch_size = 128
 num_files = 2
@@ -70,11 +67,7 @@ model.add(Dense(1, activation="sigmoid"))
 model.compile(loss='binary_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])
-<<<<<<< HEAD
 history = model.fit_generator(bg, epochs=20,
-=======
-model.fit_generator(bg, epochs=20,
->>>>>>> 77a9dd4960e57bdf719df8a0d256242ad9f62448
         steps_per_epoch=1000,
                     validation_data=(val_vects, val_y),
                     verbose=True)
@@ -84,7 +77,6 @@ model.fit_generator(bg, epochs=20,
 test_gen=batch_gen(n_batches,all_y_test,all_embeddings_test)
 scores=model.evaluate_generator(test_gen,steps=400,verbose=1)
 print("Accuracy", scores[1])
-<<<<<<< HEAD
 import matplotlib.pyplot as plt
 batch_size = 30000
 test_whole = batch_gen(1, all_y_test,all_embeddings_test)
@@ -144,11 +136,3 @@ plt.show()
 plt.savefig('bigru_loss_history.png')
 
 
-=======
-print("Loss", score[0])
-print(model.metrics_names)
-pred_gen=batch_gen(n_batches,all_y_test,all_embeddings_test)
-y_pred=model.predict_generator(pred_gen,steps=400,verbose=1)
-#f1=f1_score(all_y_test,y_pred)
-#print(f1)
->>>>>>> 77a9dd4960e57bdf719df8a0d256242ad9f62448

@@ -5,11 +5,8 @@ import pandas as pd
 import math
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
-<<<<<<< HEAD
 from sklearn.metrics import *
 
-=======
->>>>>>> 77a9dd4960e57bdf719df8a0d256242ad9f62448
 
 batch_size = 128
 num_files = 10
@@ -38,24 +35,15 @@ def batch_gen(n_batches,y,all_embeddings):
             embeddings_list = all_embeddings[i*batch_size:(i+1)*batch_size] 
 #           print("el",embeddings_list.shape,all_embeddings.shape,embeddings_list[0].shape)
             concat_embed_ques = np.array([get_concatenated_embeddings(ques) for ques in embeddings_list])
-<<<<<<< HEAD
 #            print(i,concat_embed_ques.shape)
-=======
-            #print(i,concat_embed_ques.shape)
->>>>>>> 77a9dd4960e57bdf719df8a0d256242ad9f62448
             yield concat_embed_ques, np.array(y[i*batch_size:(i+1)*batch_size])
 
 train_df = pd.read_csv("train.csv")
 test_df = pd.read_csv("test.csv")
 all_embeddings = pickle.load(open("merged_embeddings_train","rb"))
 #all_embeddings_test = pickle.load(open("merged_embeddings_test","rb"))	
-<<<<<<< HEAD
 print(all_embeddings.shape, all_embeddings[0].shape)
 print(type(all_embeddings),type(all_embeddings[0]))
-=======
-#print(all_embeddings.shape, all_embeddings[0].shape)
-#print(type(all_embeddings),type(all_embeddings[0]))
->>>>>>> 77a9dd4960e57bdf719df8a0d256242ad9f62448
 all_embeddings_train, all_embeddings_test,all_y_train,all_y_test = train_test_split(all_embeddings, train_df["target"][0:all_embeddings.shape[0]], test_size = 0.30, random_state = 42)
 embeddings_train,embeddings_val,y_train,y_val= train_test_split(all_embeddings_train,all_y_train,test_size=0.20)
 n_batches = math.ceil(len(y_train)/batch_size)
@@ -80,11 +68,7 @@ model.add(Dense(1, activation="sigmoid"))
 model.compile(loss='binary_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])
-<<<<<<< HEAD
 history = model.fit_generator(bg, epochs=10,
-=======
-model.fit_generator(bg, epochs=2,
->>>>>>> 77a9dd4960e57bdf719df8a0d256242ad9f62448
                     steps_per_epoch=1000,
                     validation_data=(val_vects, val_y),
                     verbose=True)
@@ -94,7 +78,6 @@ model.fit_generator(bg, epochs=2,
 test_gen=batch_gen(n_batches,all_y_test,all_embeddings_test)
 scores=model.evaluate_generator(test_gen,steps=400,verbose=1)
 print("Accuracy", scores[1])
-<<<<<<< HEAD
 batch_size = 30000
 test_whole = batch_gen(1, all_y_test,all_embeddings_test)
 import matplotlib.pyplot as plt
@@ -152,8 +135,3 @@ plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
 plt.show()
 plt.savefig('bilstm_loss_history.png')
-=======
-pred_val=model.predict_generator(test_gen, steps=400,verbose=1)
-print("Predicted val", pred_val[1])
-#f1_score= fi_score(
->>>>>>> 77a9dd4960e57bdf719df8a0d256242ad9f62448
