@@ -5,7 +5,11 @@ import pandas as pd
 import math
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
+<<<<<<< HEAD
 from sklearn.metrics import *
+=======
+
+>>>>>>> 77a9dd4960e57bdf719df8a0d256242ad9f62448
 batch_size = 2048
 num_files = 2
 embedding_size = 300
@@ -76,7 +80,11 @@ model.add(Dense(1,activation= 'sigmoid'))
 model.compile(loss='binary_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])
+<<<<<<< HEAD
 history = model.fit_generator(bg, epochs=5,
+=======
+model.fit_generator(bg, epochs=1,
+>>>>>>> 77a9dd4960e57bdf719df8a0d256242ad9f62448
                     steps_per_epoch=1000,
                     validation_data=(val_vects, val_y),
                     verbose=True)
@@ -86,6 +94,7 @@ history = model.fit_generator(bg, epochs=5,
 test_gen=batch_gen(n_batches,all_y_test,all_embeddings_test)
 scores=model.evaluate_generator(test_gen,steps=25,verbose=1)
 print("Accuracy", scores[1])
+<<<<<<< HEAD
 
 import matplotlib.pyplot as plt
 batch_size = 30000
@@ -147,3 +156,5 @@ plt.show()
 plt.savefig('cnn_loss_history.png')
 
 
+=======
+>>>>>>> 77a9dd4960e57bdf719df8a0d256242ad9f62448

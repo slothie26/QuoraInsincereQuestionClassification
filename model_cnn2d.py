@@ -5,16 +5,14 @@ import pandas as pd
 import math
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
-<<<<<<< HEAD
-from sklearn.metrics import *
-=======
->>>>>>> 77a9dd4960e57bdf719df8a0d256242ad9f62448
 
-batch_size = 128
+batch_size = 2048
 num_files = 2
 embedding_size = 300
 question_size = 30
-
+max_features = 40000
+#activ = 'relu'
+activ = 'tanh'
 def get_concatenated_embeddings(temp_df):
 #        print("tdf", temp_df.shape)
         zero_embeddings = np.zeros(embedding_size)
@@ -43,7 +41,7 @@ def batch_gen(n_batches,y,all_embeddings):
 train_df = pd.read_csv("train.csv")
 test_df = pd.read_csv("test.csv")
 all_embeddings = pickle.load(open("merged_embeddings_train","rb"))
-#all_embeddings_test = pickle.load(open("merged_embeddings_test","rb"))	
+all_embeddings_test = pickle.load(open("merged_embeddings_test","rb"))	
 #print(all_embeddings.shape, all_embeddings[0].shape)
 #print(type(all_embeddings),type(all_embeddings[0]))
 all_embeddings_train, all_embeddings_test,all_y_train,all_y_test = train_test_split(all_embeddings, train_df["target"][0:all_embeddings.shape[0]], test_size = 0.30, random_state = 42)
@@ -59,96 +57,30 @@ val_y = np.array(y_val[:3000])
 
 
 from keras.models import Sequential
-from keras.layers import CuDNNGRU, Dense, Bidirectional
-from sklearn.metrics import f1_score
-model = Sequential()
-model.add(Bidirectional(CuDNNGRU(64, return_sequences=True),
-                        input_shape=(30, 300)))
-model.add(Bidirectional(CuDNNGRU(64)))
-model.add(Dense(1, activation="sigmoid"))
+from keras.layers import *
 
+filters = 128
+model = Sequential()
+model.add(Conv2D(filters,kernel_size = (1,embedding_size),activation = activ, input_shape = (question_size,embedding_size)))
+model.add(Conv2D(filters,kernel_size = (2, embedding_size),activation = activ))
+model.add(Conv2D(filters,kernel_size = (3, embedding_size),activation = activ))
+model.add(Conv2D(filters,kernel_size = (5, embedding_size),activation = activ))
+
+model.add(GlobalAveragePooling1D())
+
+model.add(Flatten())
+model.add(Dropout(0.1))
+model.add(Dense(1,activation= 'sigmoid'))
 model.compile(loss='binary_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])
-<<<<<<< HEAD
-history = model.fit_generator(bg, epochs=20,
-=======
-model.fit_generator(bg, epochs=20,
->>>>>>> 77a9dd4960e57bdf719df8a0d256242ad9f62448
-        steps_per_epoch=1000,
+model.fit_generator(bg, epochs=1,
+                    steps_per_epoch=1000,
                     validation_data=(val_vects, val_y),
                     verbose=True)
 
 #test_vects = np.array([get_concatenated_embeddings(test_emb) for test_emb in all_embeddings_test])
 #test_y = np.array(y_test[:3000])
 test_gen=batch_gen(n_batches,all_y_test,all_embeddings_test)
-scores=model.evaluate_generator(test_gen,steps=400,verbose=1)
+scores=model.evaluate_generator(test_gen,steps=25,verbose=1)
 print("Accuracy", scores[1])
-<<<<<<< HEAD
-import matplotlib.pyplot as plt
-batch_size = 30000
-test_whole = batch_gen(1, all_y_test,all_embeddings_test)
-
-pred_prob=model.predict_generator(test_whole,steps=1,verbose=1)
-pred_y = pred_prob > 0.5
-print("F1 score: ",f1_score(all_y_test[:batch_size],pred_y))
-print("Confusion_matrix:\n",confusion_matrix(all_y_test[:batch_size],pred_y))
-precision, recall, _ =  precision_recall_curve(all_y_test[:batch_size],pred_prob)
-plt.figure()
-plt.title("Precision Recall curve")
-plt.xlabel("Recall")
-plt.ylabel("Precision")
-plt.plot([0, 1], [0.5, 0.5], linestyle='--')
-# plot the precision-recall curve for the model
-plt.plot(recall, precision, marker='.')
-# show the plot
-plt.show()
-plt.savefig('bigru_prc.png')
-
-print("roc curve \n")
-fpr, tpr, threshold =  roc_curve(all_y_test[:batch_size],pred_prob)
-roc_auc =  roc_auc_score(all_y_test[:batch_size],pred_prob)
-plt.figure()
-plt.title("Receiver Operating Characeristic")
-plt.plot(fpr,tpr,'b', label = 'AUC = %0.2f' %roc_auc)
-plt.legend(loc = 'lower right')
-plt.plot([0,1], [0,1], 'r--')
-plt.xlim([0,1])
-plt.ylim([0,1])
-plt.ylabel('True positive rate')
-plt.xlabel('False positive rate')
-plt.show()
-plt.savefig('bigru_roc.png')
-
-
-# summarize history for accuracy
-plt.figure()
-plt.plot(history.history['acc'])
-plt.plot(history.history['val_acc'])
-plt.title('model accuracy')
-plt.ylabel('accuracy')
-plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='upper left')
-plt.show()
-plt.savefig('bigru_acc_history.png')
-
-# summarize history for loss
-plt.figure()
-plt.plot(history.history['loss'])
-plt.plot(history.history['val_loss'])
-plt.title('model loss')
-plt.ylabel('loss')
-plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='upper left')
-plt.show()
-plt.savefig('bigru_loss_history.png')
-
-
-=======
-print("Loss", score[0])
-print(model.metrics_names)
-pred_gen=batch_gen(n_batches,all_y_test,all_embeddings_test)
-y_pred=model.predict_generator(pred_gen,steps=400,verbose=1)
-#f1=f1_score(all_y_test,y_pred)
-#print(f1)
->>>>>>> 77a9dd4960e57bdf719df8a0d256242ad9f62448
